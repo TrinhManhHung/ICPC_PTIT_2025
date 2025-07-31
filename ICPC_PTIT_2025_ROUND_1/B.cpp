@@ -1,5 +1,3 @@
-//----CODE TLEEEE----
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -25,51 +23,100 @@ using namespace std;
 #define SHOW1(x) cout << #x << " = " << (x) << endl << flush
 #define SHOW2(x, y) cout << #x << "=" << (x) << " " << #y << "=" << (y) << endl << flush
 #define faster() ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
-const int maxn = 100000;
+
+const int maxn = 5000;
 const int MOD = 1e9 + 7;
+const int BASE = 256;
 
-void solve(){   
-    string s; cin >> s;
-    int n = s.sz;
-    s = " " + s;
+string s; 
+int n, k;
+vector<unordered_set<ll>> setWords; //v[i]: hash cac tu co len = i
+set<int> lens;
 
-    int k; cin >> k;
+ll pw[maxn + 5]; //pw[i]: 256 ^ i
+ll invPw[maxn + 5]; // pw[i] ^ (MOD - 2)
+ll hs[maxn + 5]; //hs[i] hash xau s[1...i]
 
-    map<int, unordered_set<string>> len_s; //<sz, string>
-    vi lens;
-    FOR(i, 1, k){
-        string x; cin >> x;
-        len_s[x.sz].insert(x);
-        lens.pb(x.sz);
+ll powMod(ll a, ll b){
+    if(b == 0) return 1;
+    ll half = powMod(a, b / 2);
+    ll res = half * half % MOD;
+    if(b & 1) res = res * a % MOD;
+    return res;
+}
+
+void prepare(){
+    pw[0] = 1;
+    FOR(i, 1, maxn){
+        pw[i] = pw[i-1] * BASE % MOD;
     }
-    
-    sort(lens.begin(), lens.end());
-	lens.erase(unique(lens.begin(), lens.end()), lens.end());
+    FOR(i, 0, maxn){
+        invPw[i] = powMod(pw[i], MOD - 2);
+    }
+}
 
-    int dp[n+5] = {0}; dp[0] = 1;
+ll calcHash(string s){
+    ll hs = 0;
+    FOR(i, 1, s.sz - 1){
+        hs = hs + s[i] * pw[i - 1];
+        hs %= MOD;
+    }
+    return hs;
+}
+
+ll calcSegmentHash(int l, int r){
+    return (hs[r] - hs[l - 1] + MOD) % MOD * invPw[l - 1] % MOD;
+}
+
+void HuyenMay(){   
+    //input
+    cin >> s;
+    n = s.sz, s = " " + s;
+
+    unordered_set<ll> tmp;
+    setWords.assign(n + 5, tmp);
+
+    cin >> k;
+    while(k--){
+        string word; cin >> word;
+        int len = word.sz; word = " " + word;
+        ll hs = calcHash(word);
+        if(len <= n) setWords[len].insert(hs);
+        lens.insert(len);
+    }
+
+    //process
+    hs[0] = 0;
     FOR(i, 1, n){
-        string sub;
+        hs[i] = hs[i-1] + s[i] * pw[i - 1];
+        hs[i] %= MOD;
+    }
+
+    ll dp[n + 5] = {0}; //dp[i] so cach ghep de tao thanh xau s[1..i]
+    dp[0] = 1;
+    FOR(i, 1, n){
         for(auto len : lens){
             if(len > i) break;
 
-            sub = s.substr(i -len +1, len);
-            if(len_s[len].find(sub) != len_s[len].end()){
-                dp[i] += dp[i - len];
-                dp[i] %= MOD;
+            ll segHash = calcSegmentHash(i - len + 1, i);
+
+            if(setWords[len].find(segHash) != setWords[len].end()){
+                dp[i] = (dp[i] + dp[i - len]) % MOD;
             }
         }
     }
 
-    // FOR(i, 0, n) cout << dp[i] << " ";
     cout << dp[n] << endl;
 }   
 
+
 int main(){
     faster();
+    prepare();
     int t = 1;
     // cin >> t;
     while(t--){
-        solve();
+        HuyenMay();
     }
     return 0;
 }
