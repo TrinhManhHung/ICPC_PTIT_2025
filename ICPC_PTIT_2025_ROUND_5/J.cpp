@@ -1,5 +1,3 @@
-//update easier code
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -26,55 +24,70 @@ using namespace std;
 #define SHOW2(x, y) cout << #x << "=" << (x) << " " << #y << "=" << (y) << endl << flush
 #define faster() ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 
-int n; 
-int a[2005][2005];
+const int maxn = 100000;
+const int MOD = 1e9 + 9;
+const int BASE = 256;
 
-bool move(int cur_i, int cur_j, int add_i, int add_j){
-    int cnt = a[cur_i][cur_j];
+int n, m, sta, endd;
 
-    FOR(k, 2, 6){
-        cur_i += add_i;
-        cur_j += add_j;
-        if(cur_i >= 1 && cur_i <= n && cur_j >= 1 && cur_j <= n) cnt += a[cur_i][cur_j];
-        else return false;
+struct edge{
+    int vertex;
+    ll cost;
+    ll time;
+
+    edge(int v, ll c, ll t){
+        this->vertex = v;
+        this->cost = c;
+        this->time = t;
     }
+};
 
-    return cnt >= 4;
-}
+vector<edge> adj[maxn + 5];
 
-void HuyenMay(){   
-    memset(a, 0, sizeof(a));
-    cin >> n;
-    FOR(i, 1, n){
-        FOR(j, 1, n){
-            char c; cin >> c;
-            c == '#'? a[i][j] = 1 : a[i][j] = 0;
-        }
+void solve(){   
+    cin >> n >> m >> sta >> endd;
+
+    FOR(i, 1, m){
+        ll u, v, c, t; cin >> u >> v >> c >> t;
+        adj[u].pb(edge(v, c, t));
+        adj[v].pb(edge(u, c, t));
     }
+    
+    vll dist(n + 5, 1e18);
+    priority_queue<pll, vector<pll>, greater<pll>> Q; //<cur_time, cur_vertex>
+    
+    dist[sta] = 0;
+    Q.push({0, sta});
+    
+    while(!Q.empty()){
+        auto top = Q.top(); Q.pop();
+        ll cur_time = top.fi;
+        ll cur_vertex = top.se;
 
-    FOR(i, 1, n){
-        FOR(j, 1, n){
-            bool check_ngang = move(i, j, 0, 1);
-            bool check_doc = move(i, j, 1, 0);
-            bool check_cheo_chinh = move(i, j, 1, 1);
-            bool check_cheo_phu = move(i, j, 1, -1);
+        if(cur_time > dist[cur_vertex]) continue;
+    
+        for(auto v : adj[cur_vertex]){
+            ll start_time = (cur_time + v.time - 1) / v.time * v.time;
+            ll next_time = start_time + v.cost;
 
-            if(check_ngang || check_doc || check_cheo_chinh || check_cheo_phu){
-                cout << "Yes\n";
-                return;
+            if(next_time < dist[v.vertex]){ 
+                dist[v.vertex] = next_time;
+                Q.push({next_time, v.vertex});
             }
         }
     }
 
-    cout << "No\n";
+    if(dist[endd] == 1e18) cout << -1 << endl;
+    else cout << dist[endd] << endl;
 }   
+
 
 int main(){
     faster();
     int t = 1;
     // cin >> t;
     while(t--){
-        HuyenMay();
+        solve();
     }
     return 0;
 }

@@ -1,5 +1,3 @@
-//update easier code
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -26,55 +24,21 @@ using namespace std;
 #define SHOW2(x, y) cout << #x << "=" << (x) << " " << #y << "=" << (y) << endl << flush
 #define faster() ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 
-int n; 
-int a[2005][2005];
+const int maxn = 200000;
+const int MOD = 1e9 + 9;
+const int BASE = 256;
 
-bool move(int cur_i, int cur_j, int add_i, int add_j){
-    int cnt = a[cur_i][cur_j];
+void solve(){   
 
-    FOR(k, 2, 6){
-        cur_i += add_i;
-        cur_j += add_j;
-        if(cur_i >= 1 && cur_i <= n && cur_j >= 1 && cur_j <= n) cnt += a[cur_i][cur_j];
-        else return false;
-    }
-
-    return cnt >= 4;
-}
-
-void HuyenMay(){   
-    memset(a, 0, sizeof(a));
-    cin >> n;
-    FOR(i, 1, n){
-        FOR(j, 1, n){
-            char c; cin >> c;
-            c == '#'? a[i][j] = 1 : a[i][j] = 0;
-        }
-    }
-
-    FOR(i, 1, n){
-        FOR(j, 1, n){
-            bool check_ngang = move(i, j, 0, 1);
-            bool check_doc = move(i, j, 1, 0);
-            bool check_cheo_chinh = move(i, j, 1, 1);
-            bool check_cheo_phu = move(i, j, 1, -1);
-
-            if(check_ngang || check_doc || check_cheo_chinh || check_cheo_phu){
-                cout << "Yes\n";
-                return;
-            }
-        }
-    }
-
-    cout << "No\n";
 }   
+
 
 int main(){
     faster();
     int t = 1;
     // cin >> t;
     while(t--){
-        HuyenMay();
+        solve();
     }
     return 0;
 }

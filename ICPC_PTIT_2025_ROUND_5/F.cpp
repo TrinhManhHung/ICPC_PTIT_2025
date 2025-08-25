@@ -1,5 +1,3 @@
-//update easier code
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -26,55 +24,61 @@ using namespace std;
 #define SHOW2(x, y) cout << #x << "=" << (x) << " " << #y << "=" << (y) << endl << flush
 #define faster() ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 
-int n; 
-int a[2005][2005];
+const int maxn = 200000;
+const int MOD = 1e9 + 9;
+const int BASE = 256;
 
-bool move(int cur_i, int cur_j, int add_i, int add_j){
-    int cnt = a[cur_i][cur_j];
+int cost[1005]; //cost[i] chi phi toi thieu de bien 1 -> i
 
-    FOR(k, 2, 6){
-        cur_i += add_i;
-        cur_j += add_j;
-        if(cur_i >= 1 && cur_i <= n && cur_j >= 1 && cur_j <= n) cnt += a[cur_i][cur_j];
-        else return false;
+void prepare(){
+    FOR(i, 1, 1000) cost[i] = 1000000;
+    cost[1] = 0;
+    
+    FOR(i, 1, 1000){
+        FOR(x, 1, i){
+            int j = i + i / x;
+            if(j <= 1000) cost[j] = min(cost[j], cost[i] + 1);
+        }
     }
-
-    return cnt >= 4;
 }
 
-void HuyenMay(){   
-    memset(a, 0, sizeof(a));
-    cin >> n;
-    FOR(i, 1, n){
-        FOR(j, 1, n){
-            char c; cin >> c;
-            c == '#'? a[i][j] = 1 : a[i][j] = 0;
-        }
+void solve(){   
+    int n, k; cin >> n >> k;
+    int b[n + 5], c[n + 5];
+    int max_k = 0;
+    FOR(i, 1, n){ 
+        cin >> b[i];
+        max_k += cost[b[i]];
     }
+    FOR(i, 1, n) cin >> c[i];
+
+    k = min(k, max_k);
+    ll max_coin[n + 5][k + 5]; //dp[i][j] max_coin thu duoc tinh den ptu i bang cach su dung j thao tac 
+    memset(max_coin, 0, sizeof(max_coin));
 
     FOR(i, 1, n){
-        FOR(j, 1, n){
-            bool check_ngang = move(i, j, 0, 1);
-            bool check_doc = move(i, j, 1, 0);
-            bool check_cheo_chinh = move(i, j, 1, 1);
-            bool check_cheo_phu = move(i, j, 1, -1);
-
-            if(check_ngang || check_doc || check_cheo_chinh || check_cheo_phu){
-                cout << "Yes\n";
-                return;
+        FOR(j, 0, k){
+            if(j >= cost[b[i]]){
+                max_coin[i][j] = max(max_coin[i][j], max_coin[i-1][j - cost[b[i]]] + c[i]);
             }
+            max_coin[i][j] = max({max_coin[i][j], max_coin[i-1][j]});
+            
         }
     }
 
-    cout << "No\n";
+    ll res = 0;
+    FOR(j, 0, k) res = max(res, max_coin[n][j]);
+    cout << res << endl;
 }   
+
 
 int main(){
     faster();
+    prepare();
     int t = 1;
-    // cin >> t;
+    cin >> t;
     while(t--){
-        HuyenMay();
+        solve();
     }
     return 0;
 }
