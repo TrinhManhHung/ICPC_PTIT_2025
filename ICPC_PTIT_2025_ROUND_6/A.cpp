@@ -1,3 +1,4 @@
+//Update: easy problem but I read too stupidly =))
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -24,20 +25,36 @@ using namespace std;
 #define SHOW2(x, y) cout << #x << "=" << (x) << " " << #y << "=" << (y) << endl << flush
 #define faster() ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 
+const ll MOD = 998244353;
 const int maxn = 200000;
-const int MOD = 1e9 + 9;
-const int BASE = 256;
 
-void solve(){   
-
+void HuyenMay(){   
+    string s; cin >> s;
+    int n = s.sz;
+    s = " " + s;
+    
+    vi cnt(3, 0);
+    int ans = 0;
+    
+    FOR(i, 1, n){
+    	cnt[s[i] - 'A']++;
+    	if(cnt[0] && cnt[1] && cnt[2]){
+    		cnt[0]--;
+    		cnt[1]--;
+    		cnt[2]--;
+		}
+		ans = max({ans, cnt[0], cnt[1], cnt[2]});
+	}
+	
+	cout << ans << endl;
 }   
-
 
 int main(){
     faster();
     int t = 1;
+    // cin >> t;
     while(t--){
-        solve();
+        HuyenMay();
     }
     return 0;
 }
