@@ -28,8 +28,51 @@ const int maxn = 200000;
 const int MOD = 1e9 + 9;
 const int BASE = 256;
 
-void solve(){   
+struct FenwickTree{
+    int n;
+    vi tree;
 
+    FenwickTree(int _n){
+        n = _n + 5;
+        tree.assign(n, 0);
+    }
+
+    void update(int pos){
+        for(; pos <= n; pos += (pos & -pos)){
+            tree[pos] += 1;
+        }
+    }
+
+    ll get(int pos){
+        ll cnt = 0;
+        for(; pos > 0; pos -= (pos & -pos)){
+            cnt += tree[pos];
+        }
+        return cnt;
+    }
+};
+
+void solve(){   
+    int n; cin >> n;
+    int a[n + 5];
+    FOR(i, 1, n) {
+        cin >> a[i];
+    }
+
+    FenwickTree bit(n);
+
+    ll cur_res = 0;
+    FOD(i, n, 1){
+        cur_res += bit.get(a[i]+1);
+
+        bit.update(a[i]+1);
+    }
+
+    cout << cur_res << endl; //cur_res là số cặp nghịch thế hiện tại
+    FOR(i, 1, n-1){
+        cur_res = cur_res - a[i] + (n - 1 - a[i]);
+        cout << cur_res << endl;
+    }
 }   
 
 

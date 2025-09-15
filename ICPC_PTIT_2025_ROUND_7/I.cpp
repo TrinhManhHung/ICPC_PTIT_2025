@@ -10,7 +10,7 @@ using namespace std;
 #define vi vector<int>
 #define vll vector<ll>
 #define vvi vector<vector<int>>
-#define pii pair<int, ll>
+#define pii pair<int, int>
 #define pll pair<ll, ll>
 #define FOR(i, a, b) for(int i =a; i <=b; i++)
 #define FOD(i, a, b) for(int i =a; i >=b; i--)
@@ -23,18 +23,43 @@ using namespace std;
 #define SHOW1(x) cout << #x << " = " << (x) << endl << flush
 #define SHOW2(x, y) cout << #x << "=" << (x) << " " << #y << "=" << (y) << endl << flush
 #define faster() ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
-const int maxn = 100000;
-const int MOD = 998244353;
-const ll max_val = 1e9;
+
+const int maxn = 200000;
+const int MOD = 1e9 + 9;
+const int BASE = 256;
+
+ll dist(pll a, pll b){
+    ll d = (a.fi - b.fi)*(a.fi - b.fi) + (a.se - b.se)*(a.se - b.se);
+    return d;
+}
 
 void solve(){   
+    pll a, b, c;
+    cin >> a.fi >> a.se;
+    cin >> b.fi >> b.se;
+    cin >> c.fi >> c.se;
 
+    vll d(3);
+    d[0] = dist(a, b);
+    d[1] = dist(b, c);
+    d[2] = dist(a, c);
+    
+    sort(d.begin(), d.end());
+    
+    if(d[2] == d[0] + d[1]){
+        cout << "Yes\n";
+        return;
+    } else{
+        cout << "No\n";
+        return;
+    }
 }   
+
 
 int main(){
     faster();
     int t = 1;
-    cin >> t;
+    // cin >> t;
     while(t--){
         solve();
     }

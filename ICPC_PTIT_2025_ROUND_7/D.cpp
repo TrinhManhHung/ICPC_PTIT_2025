@@ -29,7 +29,40 @@ const int MOD = 1e9 + 9;
 const int BASE = 256;
 
 void solve(){   
+    int n; cin >> n;
 
+    int w[n + 5][n + 5];
+    FOR(i, 0, n-2){
+        FOR(j, i+1, n-1){
+            cin >> w[i][j];
+            w[j][i] = w[i][j];
+        }
+    }
+
+    int max_mask = (1 << n);
+    ll dp[max_mask] = {0}; //dp[mask] max weight neu tap dinh da chon la mask
+
+    FOR(mask, 0, max_mask - 1){
+        int cnt_1 = COUNT_ONE(mask);
+        if(cnt_1 & 1) continue;
+
+        FOR(i, 0, n-2){
+            if(BIT(mask, i)) continue;
+
+            FOR(j, i+1, n-1){
+                if(BIT(mask, j)) continue;
+                int new_mask = (mask) | MASK(i) | MASK(j);
+                dp[new_mask] = max(dp[new_mask], dp[mask] + w[i][j]);
+            }
+        }
+    }
+
+    ll res = 0;
+    FOR(mask, 0, max_mask - 1){
+        res = max(res, dp[mask]);
+    }
+
+    cout << res << endl;
 }   
 
 

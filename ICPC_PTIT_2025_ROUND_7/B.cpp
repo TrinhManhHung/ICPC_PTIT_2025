@@ -29,9 +29,17 @@ const int MOD = 1e9 + 9;
 const int BASE = 256;
 
 void solve(){   
-
+    int n; cin >> n;
+    int a[n + 1];
+    FOR(i, 1, n) cin >> a[i];
+    sort(a+1, a+n+1);
+    FOR(i, 2, n){
+        if(a[i] - a[i-1] > 1){
+            cout << a[i-1] + 1 << endl;
+            return;
+        }
+    }
 }   
-
 
 int main(){
     faster();

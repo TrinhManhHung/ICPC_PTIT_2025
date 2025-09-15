@@ -28,10 +28,34 @@ const int maxn = 200000;
 const int MOD = 1e9 + 9;
 const int BASE = 256;
 
-void solve(){
-    int n; cin >> n;   
-    vector<pii> v;
+void solve(){   
+    int n; cin >> n;
+    string s; cin >> s;
+    string ss = "#";
 
+    FOR(i, 0, s.sz - 1){
+        if(s[i] == 'A'){
+            ss += "BB";
+        } else{
+            ss += s[i];
+        }
+    }
+
+    ss += "#";
+    // SHOW1(ss);
+    string res = "";
+
+    FOR(i, 1, ss.sz-2){
+        if(ss[i] == ss[i+1] && ss[i] == 'B'){
+            res += 'A';
+            ss[i] = 'C';
+            i++;
+        } else{
+            res += ss[i];
+        }
+    }
+
+    cout << res << endl;
 }   
 
 

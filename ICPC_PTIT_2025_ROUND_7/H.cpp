@@ -28,8 +28,48 @@ const int maxn = 200000;
 const int MOD = 1e9 + 9;
 const int BASE = 256;
 
-void solve(){   
+ll powMod(ll n, ll p){
+    if(p == 0) return 1;
 
+    ll half = pow(n, p / 2);
+    if(half >= 1e9) return -1;
+
+    ll res = half * half;
+    if(p & 1){
+        if(1e18 / res < n) return -1;
+        res *= n;
+    }
+
+    return res;
+}
+
+void solve(){   
+    ll n; cin >> n;
+
+    
+    //TH1: B = 2
+    ll max_sqrt = sqrtl(n);
+    ll res = max_sqrt;
+
+    //TH2: B >= 3
+    set<ll> se;
+    FOR(B, 3, 60){
+        ll max_A = pow(n, 1.0 / B) + 1000;
+        FOR(A, 2, max_A){
+            ll X = powMod(A, B);
+
+            if(X >= 0 && X <= n){
+                ll tmp = sqrtl(X);
+                if(tmp * tmp != X){
+                    se.insert(X);
+                }
+            }
+
+        }
+    }
+
+    res += se.sz;
+    cout << res << endl;
 }   
 
 
